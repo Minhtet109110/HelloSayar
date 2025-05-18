@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="col-md-8 offset-md-2 bg-white p-4 rounded shadow-sm">
+        <h2 class="mb-4 text-center">Add New Course</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'courses' %}" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

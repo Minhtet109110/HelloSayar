@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section id="courses" class="courses section-bg">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title">
+            <h2>Courses</h2>
+            <p>Available Courses</p>
+        </div>
+
+        <div class="text-end mb-3">
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                + Add New Course
+            </button>
+        </div>
+
+        <div class="row">
+            {% for course in courses %}
+            <div class="col-lg-4 col-md-6 d-flex align-items-stretch mb-4">
+                <div class="course-item shadow p-3 bg-white rounded">
+                    <img src="{{ course.photo.url }}" class="img-fluid" style="height:200px; object-fit:cover;" alt="">
+                    <div class="course-content mt-3">
+                        <h3>{{ course.name }}</h3>
+                        <p>{{ course.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>${{ course.fee }}</span>
+                            <div>
+                                <a href="{% url 'course_update' course.pk %}"
+                                    class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{% url 'course_delete' course.pk %}"
+                                    class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No courses available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'course_create' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCourseModalLabel">Add New</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+{% endblock %}
